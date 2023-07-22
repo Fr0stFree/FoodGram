@@ -1,0 +1,64 @@
+[tool.poetry]
+name = "foodgramm"
+version = "0.1.0"
+description = ""
+authors = ["fr0stfree <me@frostfree.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django = "2.2.19"
+django-filter = "2.4.0"
+djangorestframework = "3.12.4"
+djangorestframework-simplejwt = "4.8.0"
+djoser = "2.1.0"
+pillow = "9.2.0"
+psycopg2-binary = "^2.9.6"
+python-dotenv = "^1.0.0"
+django-environ = "^0.10.0"
+drf-base64 = "^2.0"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.7.0"
+flake8 = "^6.0.0"
+flake8-pyproject = "^1.2.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 79
+target-version = ['py311', 'py310', 'py39']
+include = '\.pyi?$'
+exclude = '''
+
+/(
+    \.__init__.py
+  | env
+  | data
+)/
+'''
+
+[tool.flake8]
+ignore = ['E231', 'E266', 'E501', 'W503']
+per-file-ignores = [
+    '__init__.py:F401',
+]
+max-line-length = 88
+max-complexity = 10
+count = true
+statistics = true
+exclude = '''
+env,
+venv,
+.venv,
+__pycache__,
+'''
+
+[tool.isort]
+profile = "hug"
+src_paths = [
+    "src",
+]
