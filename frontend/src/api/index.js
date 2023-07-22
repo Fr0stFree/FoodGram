@@ -23,8 +23,8 @@ class Api {
           a.href = url;
           a.download = "shopping-list";
           document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
-          a.click();    
-          a.remove();  //afterwards we remove the element again 
+          a.click();
+          a.remove();  //afterwards we remove the element again
         })
       }
       reject()
@@ -32,7 +32,7 @@ class Api {
   }
 
   signin ({ email, password }) {
-    return fetch(
+    return fetch(this._url +
       '/api/auth/token/login/',
       {
         method: 'POST',
@@ -46,7 +46,7 @@ class Api {
 
   signout () {
     const token = localStorage.getItem('token')
-    return fetch(
+    return fetch(this._url +
       '/api/auth/token/logout/',
       {
         method: 'POST',
@@ -59,7 +59,7 @@ class Api {
   }
 
   signup ({ email, password, username, first_name, last_name }) {
-    return fetch(
+    return fetch(this._url +
       `/api/users/`,
       {
         method: 'POST',
@@ -73,7 +73,7 @@ class Api {
 
   getUserData () {
     const token = localStorage.getItem('token')
-    return fetch(
+    return fetch(this._url +
       `/api/users/me/`,
       {
         method: 'GET',
@@ -87,7 +87,7 @@ class Api {
 
   changePassword ({ current_password, new_password }) {
     const token = localStorage.getItem('token')
-    return fetch(
+    return fetch(this._url +
       `/api/users/set_password/`,
       {
         method: 'POST',
@@ -114,7 +114,7 @@ class Api {
       const token = localStorage.getItem('token')
       const authorization = token ? { 'authorization': `Token ${token}` } : {}
       const tagsString = tags ? tags.filter(tag => tag.value).map(tag => `&tags=${tag.slug}`).join('') : ''
-      return fetch(
+      return fetch(this._url +
         `/api/recipes/?page=${page}&limit=${limit}${author ? `&author=${author}` : ''}${is_favorited ? `&is_favorited=${is_favorited}` : ''}${is_in_shopping_cart ? `&is_in_shopping_cart=${is_in_shopping_cart}` : ''}${tagsString}`,
         {
           method: 'GET',
@@ -131,7 +131,7 @@ class Api {
   }) {
     const token = localStorage.getItem('token')
     const authorization = token ? { 'authorization': `Token ${token}` } : {}
-    return fetch(
+    return fetch(this._url +
       `/api/recipes/${recipe_id}/`,
       {
         method: 'GET',
@@ -152,7 +152,7 @@ class Api {
     ingredients = []
   }) {
     const token = localStorage.getItem('token')
-    return fetch(
+    return fetch(this._url +
       '/api/recipes/',
       {
         method: 'POST',
@@ -182,7 +182,7 @@ class Api {
     ingredients
   }, wasImageUpdated) { // image was changed
     const token = localStorage.getItem('token')
-    return fetch(
+    return fetch(this._url +
       `/api/recipes/${recipe_id}/`,
       {
         method: 'PATCH',
@@ -205,7 +205,7 @@ class Api {
 
   addToFavorites ({ id }) {
     const token = localStorage.getItem('token')
-    return fetch(
+    return fetch(this._url +
       `/api/recipes/${id}/favorite/`,
       {
         method: 'POST',
@@ -219,7 +219,7 @@ class Api {
 
   removeFromFavorites ({ id }) {
     const token = localStorage.getItem('token')
-    return fetch(
+    return fetch(this._url +
       `/api/recipes/${id}/favorite/`,
       {
         method: 'DELETE',
@@ -233,7 +233,7 @@ class Api {
 
   getUser ({ id }) {
     const token = localStorage.getItem('token')
-    return fetch(
+    return fetch(this._url +
       `/api/users/${id}/`,
       {
         method: 'GET',
@@ -250,7 +250,7 @@ class Api {
     limit = 6
   }) {
     const token = localStorage.getItem('token')
-    return fetch(
+    return fetch(this._url +
       `/api/users/?page=${page}&limit=${limit}`,
       {
         method: 'GET',
@@ -265,12 +265,12 @@ class Api {
   // subscriptions
 
   getSubscriptions ({
-    page, 
+    page,
     limit = 6,
     recipes_limit = 3
   }) {
     const token = localStorage.getItem('token')
-    return fetch(
+    return fetch(this._url +
       `/api/users/subscriptions/?page=${page}&limit=${limit}&recipes_limit=${recipes_limit}`,
       {
         method: 'GET',
@@ -286,7 +286,7 @@ class Api {
     author_id
   }) {
     const token = localStorage.getItem('token')
-    return fetch(
+    return fetch(this._url +
       `/api/users/${author_id}/subscribe/`,
       {
         method: 'DELETE',
@@ -302,7 +302,7 @@ class Api {
     author_id
   }) {
     const token = localStorage.getItem('token')
-    return fetch(
+    return fetch(this._url +
       `/api/users/${author_id}/subscribe/`,
       {
         method: 'POST',
@@ -317,7 +317,7 @@ class Api {
   // ingredients
   getIngredients ({ name }) {
     const token = localStorage.getItem('token')
-    return fetch(
+    return fetch(this._url +
       `/api/ingredients/?name=${name}`,
       {
         method: 'GET',
@@ -331,7 +331,7 @@ class Api {
   // tags
   getTags () {
     const token = localStorage.getItem('token')
-    return fetch(
+    return fetch(this._url +
       `/api/tags/`,
       {
         method: 'GET',
@@ -345,7 +345,7 @@ class Api {
 
   addToOrders ({ id }) {
     const token = localStorage.getItem('token')
-    return fetch(
+    return fetch(this._url +
       `/api/recipes/${id}/shopping_cart/`,
       {
         method: 'POST',
@@ -359,7 +359,7 @@ class Api {
 
   removeFromOrders ({ id }) {
     const token = localStorage.getItem('token')
-    return fetch(
+    return fetch(this._url +
       `/api/recipes/${id}/shopping_cart/`,
       {
         method: 'DELETE',
@@ -373,7 +373,7 @@ class Api {
 
   deleteRecipe ({ recipe_id }) {
     const token = localStorage.getItem('token')
-    return fetch(
+    return fetch(this._url +
       `/api/recipes/${recipe_id}/`,
       {
         method: 'DELETE',
@@ -387,7 +387,7 @@ class Api {
 
   downloadFile () {
     const token = localStorage.getItem('token')
-    return fetch(
+    return fetch(this._url +
       `/api/recipes/download_shopping_cart/`,
       {
         method: 'GET',
@@ -400,4 +400,4 @@ class Api {
   }
 }
 
-export default new Api(process.env.API_URL || 'http://localhost', { 'content-type': 'application/json' })
+export default new Api(process.env.API_URL || 'http://localhost:8000', { 'content-type': 'application/json' })

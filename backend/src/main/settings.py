@@ -9,7 +9,7 @@ env = environ.Env()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 if DEBUG := env.bool("DEBUG", default=True):
-    env_file_path = Path(BASE_DIR).parent / "infra" / "dev.env"
+    env_file_path = Path(BASE_DIR).parent.parent / "infra" / ".env.dev"
     environ.Env.read_env(env_file_path, encoding="utf-8")
 
 
@@ -63,9 +63,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "main.wsgi.application"
 
-
 DATABASES = {
-    "default": env.db("DB_URL", engine="django.db.backends.postgresql"),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env.str("POSTGRES_DB"),
+        "USER": env.str("POSTGRES_USER"),
+        "PASSWORD": env.str("POSTGRES_PASSWORD"),
+        "HOST": env.str("POSTGRES_HOST"),
+        "PORT": env.str("POSTGRES_PORT"),
+    }
 }
 
 
