@@ -5,9 +5,9 @@ from django.conf import settings
 from django.db import migrations
 
 
-def load_ingedients(apps, schema_editor):
+def load_ingredients(apps, schema_editor):
     path = os.path.join(
-        settings.BASE_DIR, os.pardir, "data", "ingredients.json"
+        settings.BASE_DIR, "fixtures", "ingredients.json"
     )
     with open(path, "r", encoding="UTF-8") as jsonfile:
         ingredients = json.load(jsonfile)
@@ -20,11 +20,16 @@ def load_ingedients(apps, schema_editor):
         )
 
 
+def delete_ingredients(apps, schema_editor):
+    Ingredient = apps.get_model("recipes", "Ingredient")
+    Ingredient.objects.all().delete()
+
+
 class Migration(migrations.Migration):
     dependencies = [
         ("recipes", "0001_initial"),
     ]
 
     operations = [
-        migrations.RunPython(load_ingedients),
+        migrations.RunPython(load_ingredients, delete_ingredients),
     ]

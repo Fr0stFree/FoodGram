@@ -12,10 +12,11 @@ if DEBUG := env.bool("DEBUG", default=True):
     env_file_path = Path(BASE_DIR).parent.parent / "infra" / ".env.dev"
     environ.Env.read_env(env_file_path, encoding="utf-8")
 
-
 SECRET_KEY = env.str("DJANGO_TOKEN")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+CORS_ORIGIN_ALLOW_ALL = env.bool("CORS_ORIGIN_ALLOW_ALL", default=False)
+CORS_ORIGIN_WHITELIST = env.list("CORS_ORIGIN_WHITELIST")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -25,6 +26,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "recipes.apps.RecipesConfig",
+    "corsheaders",
     "users.apps.UsersConfig",
     "rest_framework",
     "rest_framework.authtoken",
@@ -36,6 +38,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -65,7 +68,7 @@ WSGI_APPLICATION = "main.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": env.str("POSTGRES_DB"),
         "USER": env.str("POSTGRES_USER"),
         "PASSWORD": env.str("POSTGRES_PASSWORD"),
@@ -93,13 +96,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "ru-Ru"
 
-TIME_ZONE = "UTC"
-
 USE_I18N = True
 
 USE_L10N = True
-
-USE_TZ = True
 
 EMPTY_VALUE = "-None-"
 
