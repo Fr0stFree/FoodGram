@@ -6,9 +6,7 @@ from django.db import migrations
 
 
 def load_ingredients(apps, schema_editor):
-    path = os.path.join(
-        settings.BASE_DIR, "fixtures", "ingredients.json"
-    )
+    path = os.path.join(settings.BASE_DIR, "fixtures", "ingredients.json")
     with open(path, "r", encoding="UTF-8") as jsonfile:
         ingredients = json.load(jsonfile)
 

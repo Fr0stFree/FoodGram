@@ -9,8 +9,12 @@ env = environ.Env()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 if DEBUG := env.bool("DEBUG", default=True):
-    env_file_path = Path(BASE_DIR).parent.parent / "infra" / ".env.dev"
-    environ.Env.read_env(env_file_path, encoding="utf-8")
+    env_file_paths = [
+        Path(BASE_DIR).parent.parent / "infra" / ".env.backend",
+        Path(BASE_DIR).parent / "infra" / ".env.db",
+    ]
+    [env.read_env(path) for path in env_file_paths]
+
 
 SECRET_KEY = env.str("DJANGO_TOKEN")
 

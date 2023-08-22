@@ -38,7 +38,7 @@ class Command(BaseCommand):
                     user=user,
                     role=faker.random_element(
                         elements=[role[0] for role in UserRole.ROLES]
-                    )
+                    ),
                 )
             for _ in range(faker.random_int(min=1, max=amount)):
                 user_ids = User.objects.values_list("id", flat=True)
@@ -55,4 +55,8 @@ class Command(BaseCommand):
 
         follows = Follow.objects.count()
 
-        self.stdout.write(self.style.SUCCESS(f"Created {users} users",))
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"Created {users} users",
+            )
+        )

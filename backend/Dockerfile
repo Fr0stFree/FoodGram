@@ -2,14 +2,19 @@ FROM python:3.10
 
 WORKDIR /app
 
-COPY requirements.txt .
+ENV POETRY_HOME="/opt/poetry" \
+    POETRY_VERSION=1.5.1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH="$POETRY_HOME/bin:$PATH"
 
-RUN apt update && \
-    apt upgrade -y && \
-    apt -y install gcc && \
-    python3 -m pip install --upgrade pip && \
-    pip3 install -r requirements.txt --no-cache-dir
+RUN pip install poetry==1.5.1
+COPY poetry.lock pyproject.toml ./
+RUN poetry config virtualenvs.create false
+RUN poetry install --no-dev
 
-COPY . ./
+COPY ./src/ ./
 
-CMD ["gunicorn", "main.wsgi:application", "--bind", "0:8000"]
+EXPOSE 8000
+
+CMD ["poetry", "run", "gunicorn", "main.wsgi:application", "--bind", "0:8000"]
