@@ -11,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if DEBUG := env.bool("DEBUG", default=True):
     env_file_paths = [
         Path(BASE_DIR).parent.parent / "infra" / ".env.backend",
-        Path(BASE_DIR).parent / "infra" / ".env.db",
+        Path(BASE_DIR).parent.parent / "infra" / ".env.db",
     ]
     [env.read_env(path) for path in env_file_paths]
 

@@ -9,7 +9,9 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ../db_data:/var/lib/postgresql/data/
+      - db_data:/var/lib/postgresql/data/
+    networks:
+      - foodgram-network
     env_file:
       - ./.env.db
 
@@ -20,13 +22,13 @@ services:
     volumes:
       - static_value:/app/static/
       - media_value:/app/media/
+    networks:
+      - foodgram-network
     depends_on:
       - db
     env_file:
       - ./.env.backend
       - ./.env.db
-    links:
-      - db
 
   frontend:
     build: ../frontend/
@@ -34,7 +36,7 @@ services:
     env_file:
       - ./.env.frontend
     volumes:
-      - ../frontend_build/:/app/build/
+      - frontend_build:/app/build/
 
   nginx:
     image: nginx:1.21.3-alpine
@@ -44,18 +46,22 @@ services:
     volumes:
       - static_value:/var/html/static
       - media_value:/var/html/media
-      - ../frontend_build:/usr/share/nginx/html/
+      - frontend_build:/usr/share/nginx/html/
       - ./nginx.conf.template:/etc/nginx/templates/default.conf.template
+    networks:
+      - foodgram-network
     restart: always
     env_file:
-      - ./.env.backend
+      - ./.env.nginx
     depends_on:
       - backend
       - frontend
-    links:
-      - backend
 
 volumes:
   static_value:
   media_value:
   db_data:
+  frontend_build:
+
+networks:
+  foodgram-network:
