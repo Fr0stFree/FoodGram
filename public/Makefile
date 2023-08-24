@@ -104,28 +104,28 @@ ifeq ($(ENV),prod)
 	$(eval COMMAND=docker compose -f $(PRODUCTION_COMPOSE_FILE) run --rm backend python manage.py createsuperuser --username=$(SUPERUSER_USERNAME) --email=$(SUPERUSER_EMAIL) --noinput)
 else ifeq ($(ENV),dev)
 	@echo -e "$(COLOR_YELLOW)Creating superuser for development database...$(COLOR_RESET)"
-	$(eval COMMAND=python $(RELATIVE_MANAGE_PY_PATH) createsuperuser --username=$(SUPERUSER_USERNAME) --email=$(SUPERUSER_EMAIL) --noinput)
+	$(eval COMMAND=python $(RELATIVE_MANAGE_PY_PATH) createsuperuser)
 endif
 	@until $(COMMAND); do \
 		echo -e "$(COLOR_YELLOW)Waiting superuser to be created...$(COLOR_RESET)"; \
 		sleep 5 ;\
 	done
 	@sleep 3 ;
-	@echo -e "$(COLOR_GREEN)Superuser created. Login: $(SUPERUSER_EMAIL) Password: $(SUPERUSER_PASSWORD)$(COLOR_RESET)"
+	@echo -e "$(COLOR_GREEN)Superuser created.$(COLOR_RESET)"
 
 
 .PHONY: clean
 clean: # Delete database, volumes and networks
 ifeq ($(ENV),prod)
-	@echo -e "$(COLOR_YELLOW)Deleting production database...$(COLOR_RESET)"
+	@echo -e "$(COLOR_YELLOW)Deleting production build...$(COLOR_RESET)"
 	$(eval COMPOSE_FILE=$(PRODUCTION_COMPOSE_FILE))
 else ifeq ($(ENV),dev)
-	@echo -e "$(COLOR_YELLOW)Deleting development database...$(COLOR_RESET)"
+	@echo -e "$(COLOR_YELLOW)Deleting development build...$(COLOR_RESET)"
 	$(eval COMPOSE_FILE=$(DEVELOPMENT_COMPOSE_FILE))
 endif
 	@until docker compose -f $(COMPOSE_FILE) down -v; do \
-		echo -e "$(COLOR_YELLOW)Waiting database to be deleted...$(COLOR_RESET)"; \
+		echo -e "$(COLOR_YELLOW)Waiting the application to be cleaned up...$(COLOR_RESET)"; \
 		sleep 5 ;\
 	done
 	@sleep 3 ;
-	@echo -e "$(COLOR_GREEN)Database deleted$(COLOR_RESET)"
+	@echo -e "$(COLOR_GREEN)Application cleanup complete$(COLOR_RESET)"

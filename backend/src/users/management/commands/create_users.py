@@ -1,10 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from django.db.models import Count, Q, F, Sum, Avg, Max, Min, Aggregate
+from django.db.models import Count, Q
+from django.contrib.auth.hashers import make_password
 from faker import Faker
 
-from users.models import UserRole, Follow
+from users.models import UserRole
 
 User = get_user_model()
 
@@ -27,25 +28,20 @@ class Command(BaseCommand):
 
         with transaction.atomic():
             for _ in range(amount):
-                user = User.objects.create_user(
+                user = User.objects.create(
                     username=faker.user_name(),
                     email=faker.email(),
-                    password=faker.password(),
+                    password=make_password(faker.password()),
                     first_name=faker.first_name(),
                     last_name=faker.last_name(),
                 )
-                UserRole.objects.create(
-                    user=user,
-                    role=faker.random_element(
-                        elements=[role[0] for role in UserRole.ROLES]
-                    ),
-                )
-            for _ in range(faker.random_int(min=1, max=amount)):
-                user_ids = User.objects.values_list("id", flat=True)
-                Follow.objects.create(
-                    follower_id=faker.random_element(elements=user_ids),
-                    author_id=faker.random_element(elements=user_ids),
-                )
+                user.userrole.role = faker.random_element(elements=UserRole.ROLES)[0]
+                if user.userrole.role == UserRole.MODERATOR:
+                    user.is_staff = True
+                    user.save()
+
+                user.userrole.save()
+
 
         moderators, admins, users = UserRole.objects.aggregate(
             moderators=Count("user", filter=Q(role=UserRole.MODERATOR)),
@@ -53,10 +49,9 @@ class Command(BaseCommand):
             users=Count("user", filter=Q(role=UserRole.USER)),
         ).values()
 
-        follows = Follow.objects.count()
-
         self.stdout.write(
             self.style.SUCCESS(
-                f"Created {users} users",
+                f"Successfully created  {amount} users. Db contains: "
+                f"{admins} admins, {moderators} moderators, and {users} users"
             )
         )

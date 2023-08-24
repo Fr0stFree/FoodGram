@@ -6,27 +6,12 @@ services:
     image: postgres:13.0-alpine
     container_name: db
     restart: always
-    ports:
-      - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data/
-    networks:
-      - foodgram-network
+    ports:
+      - "5432:5432"
     env_file:
       - ./.env.db
 
-  frontend:
-    build: ../../frontend/
-    container_name: frontend
-    env_file:
-      - ./.env.frontend
-    volumes:
-      - frontend_build:/app/build/
-
-
 volumes:
   db_data:
-  frontend_build:
-
-networks:
-  foodgram-network:
