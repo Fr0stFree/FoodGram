@@ -1,13 +1,11 @@
-version: '3.8'
-name: "foodgram"
+version: "3.8"
+name: "foodgram-prod"
 
 services:
   db:
     image: postgres:13.0-alpine
     container_name: db
     restart: always
-    ports:
-      - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data/
     networks:
