@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.db.models import Count, Q
-from django.contrib.auth.hashers import make_password
 from faker import Faker
 
 from users.models import UserRole
@@ -41,7 +41,6 @@ class Command(BaseCommand):
                     user.save()
 
                 user.userrole.save()
-
 
         moderators, admins, users = UserRole.objects.aggregate(
             moderators=Count("user", filter=Q(role=UserRole.MODERATOR)),
