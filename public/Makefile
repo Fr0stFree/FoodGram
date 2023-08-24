@@ -24,7 +24,7 @@ help:
 
 
 .PHONY: run
-run: clean start collectstatic migrate createsuperuser # Initialize the application
+run: clean start collectstatic migrate createsuperuser filldb # Initialize the application
 	@echo -e "$(COLOR_GREEN)Application initialized$(COLOR_RESET)"
 
 
@@ -45,8 +45,8 @@ endif
 	@echo -e "$(COLOR_GREEN)App started$(COLOR_RESET)"
 
 
-.PHONY: down
-down: # Shutdown the application
+.PHONY: stop
+stop: # Stop the application
 ifeq ($(ENV),prod)
 	@echo -e "$(COLOR_YELLOW)Stopping production build...$(COLOR_RESET)"
 	$(eval COMPOSE_FILE=$(PRODUCTION_COMPOSE_FILE))
@@ -54,7 +54,7 @@ else ifeq ($(ENV),dev)
 	@echo -e "$(COLOR_YELLOW)Stopping development build...$(COLOR_RESET)"
 	$(eval COMPOSE_FILE=$(DEVELOPMENT_COMPOSE_FILE))
 endif
-	@until docker compose -f $(COMPOSE_FILE) down; do \
+	@until docker compose -f $(COMPOSE_FILE) stop; do \
 		echo -e "$(COLOR_YELLOW)Waiting app to be stopped...$(COLOR_RESET)"; \
 		sleep 5 ;\
 	done
@@ -113,6 +113,23 @@ endif
 	@sleep 3 ;
 	@echo -e "$(COLOR_GREEN)Superuser created.$(COLOR_RESET)"
 
+
+.PHONY: filldb
+filldb: # Fill database with fake data
+ifeq ($(ENV), prod)
+	@echo -e "$(COLOR_YELLOW)Filling production database with fake data...$(COLOR_RESET)"
+	$(eval ENTRYPOINT=docker compose -f$(PRODUCTION_COMPOSE_FILE) run --rm backend python manage.py)
+else ifeq ($(ENV), dev)
+	@echo -e "$(COLOR_YELLOW)Filling development database with fake data...$(COLOR_RESET)"
+	$(eval ENTRYPOINT=python $(RELATIVE_MANAGE_PY_PATH))
+endif
+	@$(ENTRYPOINT) create_users --amount 50
+	@$(ENTRYPOINT) create_follows --amount 20
+	@$(ENTRYPOINT) create_tags --amount 10
+	@$(ENTRYPOINT) create_recipes --amount 100
+	@$(ENTRYPOINT) create_favorite_recipes --amount 25
+	@$(ENTRYPOINT) create_baskets --amount 25
+	@echo -e "$(COLOR_GREEN)Database filled with fake data$(COLOR_RESET)"
 
 .PHONY: clean
 clean: # Delete database, volumes and networks
