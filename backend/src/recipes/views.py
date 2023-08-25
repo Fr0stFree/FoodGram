@@ -84,34 +84,33 @@ class RecipesViewSet(viewsets.ModelViewSet):
     def shopping_cart(self, request, pk=None):
         recipe = self.get_object()
 
-        match request.method:
-            case "DELETE":
-                try:
-                    request.user.users_set.get(recipe=recipe).delete()
+        if request.method == "DELETE":
+            try:
+                request.user.users_set.get(recipe=recipe).delete()
+                return Response(
+                    data={"success": f"{recipe} удален из корзины"},
+                    status=status.HTTP_204_NO_CONTENT,
+                )
+            except ObjectDoesNotExist:
+                return Response(
+                    data={"error": f"{recipe} не найден в корзине"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        elif request.method == "POST":
+            try:
+                request.user.users_set.create(recipe=recipe)
+                serializer = RecipeSerializer(instance=recipe)
+                return Response(
+                    data=serializer.data, status=status.HTTP_201_CREATED
+                )
+            except IntegrityError as error:
+                if "recipe_already_in_busket" in str(error):
                     return Response(
-                        data={"success": f"{recipe} удален из корзины"},
-                        status=status.HTTP_204_NO_CONTENT,
-                    )
-                except ObjectDoesNotExist:
-                    return Response(
-                        data={"error": f"{recipe} не найден в корзине"},
+                        data={"error": f"{recipe} уже в корзине"},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
-
-            case "POST":
-                try:
-                    request.user.users_set.create(recipe=recipe)
-                    serializer = RecipeSerializer(instance=recipe)
-                    return Response(
-                        data=serializer.data, status=status.HTTP_201_CREATED
-                    )
-                except IntegrityError as error:
-                    if "recipe_already_in_busket" in str(error):
-                        return Response(
-                            data={"error": f"{recipe} уже в корзине"},
-                            status=status.HTTP_400_BAD_REQUEST,
-                        )
-                    raise error
+                raise error
 
     @action(
         detail=False,
