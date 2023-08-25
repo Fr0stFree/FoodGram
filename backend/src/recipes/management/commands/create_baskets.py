@@ -40,6 +40,6 @@ class Command(BaseCommand):
 
         self.stdout.write(
             self.style.SUCCESS(
-                f"Successfully created baskets full of recipes for {amount} users"
+                f"Successfully created basket's recipes for {amount} users"
             )
         )

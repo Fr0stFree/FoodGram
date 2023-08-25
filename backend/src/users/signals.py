@@ -13,15 +13,16 @@ def setup_role(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=UserRole)
 def setup_role_permissions(sender, instance, created, **kwargs):
-    match instance.role:
-        case UserRole.USER:
-            instance.user.is_superuser = False
-            instance.user.is_staff = False
-        case UserRole.MODERATOR:
-            instance.user.is_staff = True
-            instance.user.is_superuser = False
-        case UserRole.ADMIN:
-            instance.user.is_superuser = True
-            instance.user.is_staff = True
+    if instance.role == UserRole.USER:
+        instance.user.is_superuser = False
+        instance.user.is_staff = False
+
+    elif instance.role == UserRole.MODERATOR:
+        instance.user.is_staff = True
+        instance.user.is_superuser = False
+
+    elif instance.role == UserRole.ADMIN:
+        instance.user.is_superuser = True
+        instance.user.is_staff = True
 
     instance.user.save()

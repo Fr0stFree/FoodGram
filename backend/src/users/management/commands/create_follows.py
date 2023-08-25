@@ -29,7 +29,7 @@ class Command(BaseCommand):
         ).filter(follows_count=0)
         if (users_amount := users_without_follows.count()) < amount:
             raise ValueError(
-                f"The number of follows must be less than or equal to {users_amount}"
+                f"The number of follows must be less than {users_amount}"
             )
 
         with transaction.atomic():

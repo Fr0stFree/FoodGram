@@ -48,34 +48,33 @@ class RecipesViewSet(viewsets.ModelViewSet):
     def favorite(self, request, pk=None):
         recipe = self.get_object()
 
-        match request.method:
-            case "DELETE":
-                try:
-                    request.user.favorites.get(recipe=recipe).delete()
+        if request.method == "DELETE":
+            try:
+                request.user.favorites.get(recipe=recipe).delete()
+                return Response(
+                    data={"success": f"{recipe} удален из избранного"},
+                    status=status.HTTP_204_NO_CONTENT,
+                )
+            except ObjectDoesNotExist:
+                return Response(
+                    data={"error": f"{recipe} не найден в избранном"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        elif request.method == "POST":
+            try:
+                request.user.favorites.create(recipe=recipe)
+                serializer = RecipeSerializer(instance=recipe)
+                return Response(
+                    data=serializer.data, status=status.HTTP_201_CREATED
+                )
+            except IntegrityError as error:
+                if "unique_favorite" in str(error):
                     return Response(
-                        data={"success": f"{recipe} удален из избранного"},
-                        status=status.HTTP_204_NO_CONTENT,
-                    )
-                except ObjectDoesNotExist:
-                    return Response(
-                        data={"error": f"{recipe} не найден в избранном"},
+                        data={"error": f"{recipe} уже в избранном"},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
-
-            case "POST":
-                try:
-                    request.user.favorites.create(recipe=recipe)
-                    serializer = RecipeSerializer(instance=recipe)
-                    return Response(
-                        data=serializer.data, status=status.HTTP_201_CREATED
-                    )
-                except IntegrityError as error:
-                    if "unique_favorite" in str(error):
-                        return Response(
-                            data={"error": f"{recipe} уже в избранном"},
-                            status=status.HTTP_400_BAD_REQUEST,
-                        )
-                    raise error
+                raise error
 
     @action(
         detail=True,
