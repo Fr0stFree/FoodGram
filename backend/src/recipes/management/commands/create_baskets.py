@@ -28,7 +28,9 @@ class Command(BaseCommand):
 
         with transaction.atomic():
             for user in users:
-                recipes = Recipe.objects.all().order_by("?")[:rd.randint(1, 8)]
+                recipes = Recipe.objects.all().order_by("?")[
+                    : rd.randint(1, 8)
+                ]
 
                 for recipe in recipes:
                     Busket.objects.get_or_create(
@@ -41,4 +43,3 @@ class Command(BaseCommand):
                 f"Successfully created baskets full of recipes for {amount} users"
             )
         )
-

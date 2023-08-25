@@ -31,9 +31,13 @@ class Command(BaseCommand):
 
         with transaction.atomic():
             for author in authors:
-                tags = Tag.objects.all().order_by("?")[:faker.random_int(0, 3)]
+                tags = Tag.objects.all().order_by("?")[
+                    : faker.random_int(0, 3)
+                ]
                 image = faker.image()
-                ingredients = Ingredient.objects.all().order_by("?")[:faker.random_int(2, 10)]
+                ingredients = Ingredient.objects.all().order_by("?")[
+                    : faker.random_int(2, 10)
+                ]
 
                 recipe = Recipe.objects.create(
                     author=author,
@@ -59,14 +63,11 @@ class Command(BaseCommand):
                 recipe.save()
 
         self.stdout.write(
-            self.style.SUCCESS(
-                f"Successfully created {amount} recipes"
-            )
+            self.style.SUCCESS(f"Successfully created {amount} recipes")
         )
 
 
 def _get_image_name(faker: Faker) -> str:
     return faker.file_name(
-        category="image",
-        extension=faker.file_extension(category="image")
+        category="image", extension=faker.file_extension(category="image")
     ).replace(" ", "_")

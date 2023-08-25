@@ -28,12 +28,14 @@ class Command(BaseCommand):
 
         with transaction.atomic():
             for user in users:
-                recipes = Recipe.objects.all().order_by("?")[:rd.randint(1, 6)]
+                recipes = Recipe.objects.all().order_by("?")[
+                    : rd.randint(1, 6)
+                ]
 
                 for recipe in recipes:
                     created, attempts = False, 0
 
-                    while not created or attempts < 10:
+                    while not created and attempts < 5:
                         _, created = FavoriteRecipe.objects.get_or_create(
                             user=user,
                             recipe=recipe,
@@ -45,4 +47,3 @@ class Command(BaseCommand):
                 f"Successfully created favorite recipes for {amount} users"
             )
         )
-

@@ -5,15 +5,28 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('recipes', '0002_load_ingedients'),
+        ("recipes", "0002_load_ingedients"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='tag',
-            name='color',
-            field=models.CharField(blank=True, help_text='HEX-код цвета', max_length=6, null=True, unique=True, validators=[django.core.validators.RegexValidator(flags='I', message='Цвет в формате HEX', regex='^[A-F\\d]{6}$')], verbose_name='HEX-код'),
+            model_name="tag",
+            name="color",
+            field=models.CharField(
+                blank=True,
+                help_text="HEX-код цвета",
+                max_length=6,
+                null=True,
+                unique=True,
+                validators=[
+                    django.core.validators.RegexValidator(
+                        flags="I",
+                        message="Цвет в формате HEX",
+                        regex="^[A-F\\d]{6}$",
+                    )
+                ],
+                verbose_name="HEX-код",
+            ),
         ),
     ]

@@ -1,7 +1,7 @@
 import styles from './style.module.css'
-import { LinkComponent, Icons, Button, TagsContainer } from '../index'
-import { useState, useContext } from 'react'
-import { AuthContext } from '../../contexts'
+import {Button, Icons, LinkComponent, TagsContainer} from '../index'
+import {useContext} from 'react'
+import {AuthContext} from '../../contexts'
 
 const Card = ({
   name = 'Без названия',
@@ -41,7 +41,7 @@ const Card = ({
           />
         </div>
       </div>
-      
+
       <div className={styles.card__footer}>
           {authContext && <Button
             className={styles.card__add}
@@ -57,7 +57,7 @@ const Card = ({
           >
             {is_in_shopping_cart ? <><Icons.DoneIcon />Рецепт добавлен</> : <><Icons.PlusIcon fill='#4A61DD' /> Добавить в покупки</>}
           </Button>}
-          
+
           {authContext && <Button
             modifier='style_none'
             clickHandler={_ => {

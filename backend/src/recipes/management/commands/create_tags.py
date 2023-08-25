@@ -23,16 +23,14 @@ class Command(BaseCommand):
 
         with transaction.atomic():
             for _ in range(amount):
-                Tag.objects.create(
+                Tag.objects.get_or_create(
                     name=faker.word(),
                     color=_get_hex_color(faker),
                     slug=_get_slug_string(faker),
                 )
 
         self.stdout.write(
-            self.style.SUCCESS(
-                f"Successfully created {amount} tags"
-            )
+            self.style.SUCCESS(f"Successfully created {amount} tags")
         )
 
 

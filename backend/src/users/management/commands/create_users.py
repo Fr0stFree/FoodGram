@@ -35,11 +35,9 @@ class Command(BaseCommand):
                     first_name=faker.first_name(),
                     last_name=faker.last_name(),
                 )
-                user.userrole.role = faker.random_element(elements=UserRole.ROLES)[0]
-                if user.userrole.role == UserRole.MODERATOR:
-                    user.is_staff = True
-                    user.save()
-
+                user.userrole.role = faker.random_element(
+                    elements=UserRole.ROLES
+                )[0]
                 user.userrole.save()
 
         moderators, admins, users = UserRole.objects.aggregate(
@@ -51,6 +49,6 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS(
                 f"Successfully created  {amount} users. Db contains: "
-                f"{admins} admins, {moderators} moderators, and {users} users"
+                f"{admins} admins, {moderators} moderators and {users} users"
             )
         )

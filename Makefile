@@ -1,8 +1,7 @@
-## for start mySQL container:
 SHELL := /bin/bash
-PRODUCTION_COMPOSE_FILE := ../infra/production/docker-compose.yml
-DEVELOPMENT_COMPOSE_FILE := ../infra/development/docker-compose.yml
-RELATIVE_MANAGE_PY_PATH := ../backend/src/manage.py
+PRODUCTION_COMPOSE_FILE := infra/production/docker-compose.yml
+DEVELOPMENT_COMPOSE_FILE := infra/development/docker-compose.yml
+RELATIVE_MANAGE_PY_PATH := backend/src/manage.py
 ENV ?= dev
 
 SUPERUSER_EMAIL = admin@fake.com
@@ -24,7 +23,7 @@ help:
 
 
 .PHONY: run
-run: clean start collectstatic migrate createsuperuser filldb # Initialize the application
+run: clean start collectstatic migrate filldb # Initialize the application
 	@echo -e "$(COLOR_GREEN)Application initialized$(COLOR_RESET)"
 
 
@@ -97,23 +96,6 @@ endif
 	@echo -e "$(COLOR_GREEN)Migrations applied$(COLOR_RESET)"
 
 
-.PHONY: createsuperuser
-createsuperuser: # Create superuser
-ifeq ($(ENV),prod)
-	@echo -e "$(COLOR_YELLOW)Creating superuser for production database...$(COLOR_RESET)"
-	$(eval COMMAND=docker compose -f $(PRODUCTION_COMPOSE_FILE) run --rm backend python manage.py createsuperuser --username=$(SUPERUSER_USERNAME) --email=$(SUPERUSER_EMAIL) --noinput)
-else ifeq ($(ENV),dev)
-	@echo -e "$(COLOR_YELLOW)Creating superuser for development database...$(COLOR_RESET)"
-	$(eval COMMAND=python $(RELATIVE_MANAGE_PY_PATH) createsuperuser)
-endif
-	@until $(COMMAND); do \
-		echo -e "$(COLOR_YELLOW)Waiting superuser to be created...$(COLOR_RESET)"; \
-		sleep 5 ;\
-	done
-	@sleep 3 ;
-	@echo -e "$(COLOR_GREEN)Superuser created.$(COLOR_RESET)"
-
-
 .PHONY: filldb
 filldb: # Fill database with fake data
 ifeq ($(ENV), prod)
@@ -124,8 +106,9 @@ else ifeq ($(ENV), dev)
 	$(eval ENTRYPOINT=python $(RELATIVE_MANAGE_PY_PATH))
 endif
 	@$(ENTRYPOINT) create_users --amount 50
+	@$(ENTRYPOINT) create_superuser
 	@$(ENTRYPOINT) create_follows --amount 20
-	@$(ENTRYPOINT) create_tags --amount 10
+	@$(ENTRYPOINT) create_tags --amount 6
 	@$(ENTRYPOINT) create_recipes --amount 100
 	@$(ENTRYPOINT) create_favorite_recipes --amount 25
 	@$(ENTRYPOINT) create_baskets --amount 25

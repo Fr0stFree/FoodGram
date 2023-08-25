@@ -9,9 +9,10 @@ env = environ.Env()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 if DEBUG := env.bool("DEBUG", default=True):
+    project_folder = Path(BASE_DIR).parent.parent
     env_file_paths = [
-        Path(BASE_DIR).parent.parent / "infra" / "development" / ".env.backend",
-        Path(BASE_DIR).parent.parent / "infra" / "development" / ".env.db",
+        project_folder / "infra" / "development" / ".env.backend",
+        project_folder / "infra" / "development" / ".env.db",
     ]
     [env.read_env(path) for path in env_file_paths]
 
