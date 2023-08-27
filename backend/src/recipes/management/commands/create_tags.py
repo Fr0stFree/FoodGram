@@ -40,4 +40,4 @@ def _get_hex_color(faker: Faker) -> str:
 
 def _get_slug_string(faker: Faker) -> str:
     text = faker.text(faker.random_int(5, 50))
-    return text.replace(" ", "-").rstrip(".").lower()
+    return text.replace(" ", "-").replace(".", "").lower()

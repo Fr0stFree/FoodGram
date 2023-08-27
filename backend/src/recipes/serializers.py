@@ -19,6 +19,13 @@ User = get_user_model()
 
 
 class TagSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance: Tag):
+        data = super().to_representation(instance)
+        if not data["color"].startswith("#"):
+            data["color"] = "#" + data["color"]
+        return data
+
     class Meta:
         model = Tag
         fields = (
