@@ -1,3 +1,5 @@
+import re
+
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
@@ -21,7 +23,7 @@ class Tag(models.Model):
             RegexValidator(
                 regex=r"^[A-F\d]{6}$",
                 message="Цвет в формате HEX",
-                flags="I",
+                flags=re.IGNORECASE,
             ),
         ),
         help_text="HEX-код цвета",

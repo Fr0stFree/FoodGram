@@ -74,7 +74,7 @@ class AddShowRecipeSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer(read_only=True)
     ingredients = serializers.SerializerMethodField()
     is_favorited = serializers.SerializerMethodField()
-    is_in_busket = serializers.SerializerMethodField()
+    is_in_shopping_cart = serializers.SerializerMethodField()
     image = Base64ImageField()
 
     class Meta:
@@ -85,7 +85,7 @@ class AddShowRecipeSerializer(serializers.ModelSerializer):
             "author",
             "ingredients",
             "is_favorited",
-            "is_in_busket",
+            "is_in_shopping_cart",
             "name",
             "image",
             "text",
@@ -105,7 +105,7 @@ class AddShowRecipeSerializer(serializers.ModelSerializer):
             recipe=obj, user=request.user
         ).exists()
 
-    def get_is_in_busket(self, obj):
+    def get_is_in_shopping_cart(self, obj):
         request = self.context.get("request")
         if not request or request.user.is_anonymous:
             return False
