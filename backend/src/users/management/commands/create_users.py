@@ -34,6 +34,7 @@ class Command(BaseCommand):
                     password=make_password(faker.password()),
                     first_name=faker.first_name(),
                     last_name=faker.last_name(),
+                    is_active=True,
                 )
                 user.userrole.role = faker.random_element(
                     elements=UserRole.ROLES

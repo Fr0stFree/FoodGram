@@ -24,6 +24,7 @@ class Command(BaseCommand):
             password=make_password(admin_password),
             first_name="Mr.",
             last_name="Admin",
+            is_active=True,
         )
         admin.userrole.role = UserRole.ADMIN
         admin.userrole.save()
