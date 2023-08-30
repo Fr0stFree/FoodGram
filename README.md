@@ -40,4 +40,26 @@ make run ENV=prod
 ```
 ###### Данная команда запустит проект в продакшн режиме - создаст контейнеры, соберет статику, применит миграции, создаст суперпользователя, наполнит базу данных и запустит проект на 80 порту
 
+---
+
+### Верстка 
+
+<section>
+    <details>
+        <summary> Главная страница </summary>
+        <img src="./public/images/main.png" alt="Main page" />
+    </details>
+    <details>
+        <summary> Покупки </summary>
+        <img src="./public/images/shopping_cart.png" alt="Shopping cart"/>
+    </details>
+    <details>
+        <summary> Подписки </summary>
+        <img src="./public/images/subscriptions.png" alt="Subscriptions"/>
+    </details>
+    <details>
+        <summary> Страница регистрации </summary>
+        <img src="./public/images/signup.png" alt="Signup" />
+    </details>
+</section>
 
