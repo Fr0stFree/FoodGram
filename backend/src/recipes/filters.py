@@ -1,6 +1,19 @@
 from django_filters import rest_framework as filters
 
-from .models import Ingredient, Recipe
+from .models import Ingredient, Recipe, Tag
+
+
+class TagFilter(filters.CharFilter):
+    """Custom filter for tags."""
+    def filter(self, qs, value):
+        if not value:
+            return qs
+
+        tags = value.split(",")
+        if not Tag.objects.filter(slug__in=tags).exists():
+            return qs.none()
+
+        return super().filter(qs, value)
 
 
 class IngredientFilter(filters.FilterSet):
@@ -19,7 +32,7 @@ class RecipeFilter(filters.FilterSet):
         method="get_is_favorited",
         label="favorite",
     )
-    tags = filters.AllValuesMultipleFilter(
+    tags = TagFilter(
         field_name="tags__slug",
         label="tags",
     )
@@ -44,6 +57,4 @@ class RecipeFilter(filters.FilterSet):
 
     def get_is_in_shopping_cart(self, queryset, name, value):
         if value:
-            return Recipe.objects.filter(
-                basket_set__user=self.request.user
-            )
+            return Recipe.objects.filter(basket_set__user=self.request.user)

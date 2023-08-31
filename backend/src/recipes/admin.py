@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib import admin
 
+from .forms import RecipeAdminForm
 from .models import (
     Busket,
     FavoriteRecipe,
@@ -59,6 +60,7 @@ class RecipeIngredientsAdmin(admin.ModelAdmin):
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
+    form = RecipeAdminForm
     list_display = (
         "id",
         "name",
