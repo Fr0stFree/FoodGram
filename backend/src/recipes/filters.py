@@ -3,19 +3,6 @@ from django_filters import rest_framework as filters
 from .models import Ingredient, Recipe, Tag
 
 
-class TagFilter(filters.CharFilter):
-    """Custom filter for tags."""
-    def filter(self, qs, value):
-        if not value:
-            return qs
-
-        tags = value.split(",")
-        if not Tag.objects.filter(slug__in=tags).exists():
-            return qs.none()
-
-        return super().filter(qs, value)
-
-
 class IngredientFilter(filters.FilterSet):
     name = filters.CharFilter(
         field_name="name",
@@ -32,9 +19,10 @@ class RecipeFilter(filters.FilterSet):
         method="get_is_favorited",
         label="favorite",
     )
-    tags = TagFilter(
+    tags = filters.ModelMultipleChoiceFilter(
         field_name="tags__slug",
-        label="tags",
+        to_field_name="slug",
+        queryset=Tag.objects.all(),
     )
     is_in_shopping_cart = filters.BooleanFilter(
         method="get_is_in_shopping_cart",
