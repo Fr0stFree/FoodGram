@@ -65,7 +65,7 @@ endif
 collectstatic: # Collect static files
 ifeq ($(ENV),prod)
 	@echo -e "$(COLOR_YELLOW)Collecting static files for production build...$(COLOR_RESET)"
-	$(eval COMMAND=docker compose -f $(PRODUCTION_COMPOSE_FILE) run --rm backend python manage.py collectstatic --noinput)
+	$(eval COMMAND=docker compose -f $(PRODUCTION_COMPOSE_FILE) run --rm backend_1 python manage.py collectstatic --noinput)
 	@echo "Command: $(COMMAND)"
 else ifeq ($(ENV),dev)
 	@echo -e "$(COLOR_GREEN)Skipping collecting static files for development build...$(COLOR_GREEN)"
@@ -83,7 +83,7 @@ endif
 migrate: # Apply database migrations
 ifeq ($(ENV),prod)
 	@echo -e "$(COLOR_YELLOW)Migrating production database...$(COLOR_RESET)"
-	$(eval COMMAND=docker compose -f $(PRODUCTION_COMPOSE_FILE) run --rm backend python manage.py migrate)
+	$(eval COMMAND=docker compose -f $(PRODUCTION_COMPOSE_FILE) run --rm backend_1 python manage.py migrate)
 else ifeq ($(ENV),dev)
 	@echo -e "$(COLOR_YELLOW)Migrating development database...$(COLOR_RESET)"
 	$(eval COMMAND=python $(RELATIVE_MANAGE_PY_PATH) migrate)
@@ -100,7 +100,7 @@ endif
 filldb: # Fill database with fake data
 ifeq ($(ENV), prod)
 	@echo -e "$(COLOR_YELLOW)Filling production database with fake data...$(COLOR_RESET)"
-	$(eval ENTRYPOINT=docker compose -f$(PRODUCTION_COMPOSE_FILE) run --rm backend python manage.py)
+	$(eval ENTRYPOINT=docker compose -f$(PRODUCTION_COMPOSE_FILE) run --rm backend_1 python manage.py)
 else ifeq ($(ENV), dev)
 	@echo -e "$(COLOR_YELLOW)Filling development database with fake data...$(COLOR_RESET)"
 	$(eval ENTRYPOINT=python $(RELATIVE_MANAGE_PY_PATH))

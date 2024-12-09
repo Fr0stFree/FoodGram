@@ -1,5 +1,4 @@
-version: "3.8"
-name: "foodgram-prod"
+name: "foodgram"
 
 services:
   db:
@@ -11,11 +10,19 @@ services:
     networks:
       - foodgram-network
     env_file:
-      - ./.env.db
+      - ./db.env
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
 
-  backend:
+  backend_1:
     build: ../../backend/
-    container_name: backend
+    container_name: backend_1
     restart: always
     volumes:
       - static_value:/app/static/
@@ -25,14 +32,45 @@ services:
     depends_on:
       - db
     env_file:
-      - ./.env.backend
-      - ./.env.db
+      - ./backend.env
+      - ./db.env
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  backend_2:
+    build: ../../backend/
+    container_name: backend_2
+    restart: always
+    volumes:
+      - static_value:/app/static/
+      - media_value:/app/media/
+    networks:
+      - foodgram-network
+    depends_on:
+      - db
+    env_file:
+      - ./backend.env
+      - ./db.env
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
 
   frontend:
     build: ../../frontend/
     container_name: frontend
     env_file:
-      - ./.env.frontend
+      - ./frontend.env
     volumes:
       - frontend_build:/app/build/
 
@@ -50,9 +88,10 @@ services:
       - foodgram-network
     restart: always
     env_file:
-      - ./.env.nginx
+      - ./nginx.env
     depends_on:
-      - backend
+      - backend_1
+      - backend_2
       - frontend
 
 volumes:
