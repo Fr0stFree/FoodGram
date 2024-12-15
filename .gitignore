@@ -155,6 +155,9 @@ cython_debug/
 # PyCharm
 .idea/
 
+# VsCode
+.vscode/
+
 # Static files
 media/
 static/
